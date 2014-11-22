@@ -2,11 +2,11 @@
 // error_reporting (E_ALL ^ E_NOTICE);
 // photo gallery settings
 $mainFolder    = 'albums';   // folder where your albums are located - relative to root
-$albumsPerPage = '12';       // number of albums per page
-$itemsPerPage  = '6';       // number of images per page    
+$albumsPerPage = '9';       // number of albums per page
+$itemsPerPage  = '9';       // number of images per page    
 $thumb_width   = '150';      // width of thumbnails
 //$thumb_height  = '85';       // height of thumbnails
-$extensions    = array(".jpg",".png",".gif",".JPG",".PNG",".GIF"); // allowed extensions in photo gallery
+$extensions    = array(".jpg",".jpeg",".png",".gif",".JPG","JPEG",".PNG",".GIF"); // allowed extensions in photo gallery
 
 
 // create thumbnails from images
@@ -31,14 +31,20 @@ function print_pagination($numPages,$urlVars,$currentPage) {
         
    if ($numPages > 1) {
       
-	   echo 'Page '. $currentPage .' of '. $numPages;
-	   echo '&nbsp;&nbsp;&nbsp;';
+	   echo '<b>Page '. $currentPage .' of '. $numPages . '</b>';
+	   echo '<br />';
    
        if ($currentPage > 1) {
 	       $prevPage = $currentPage - 1;
-	       echo '<a href="?'. $urlVars .'p='. $prevPage.'">&laquo;&laquo;</a> ';
+	       echo '<a href="?'. $urlVars .'p='. $prevPage.'">&laquo;&laquo; Last Page </a> ';
 	   }	   
-	   
+	   if ($currentPage != $numPages) {
+           $nextPage = $currentPage + 1;	
+		   echo ' <a href="?'. $urlVars .'p='. $nextPage.'"> Next Page &raquo;&raquo;</a>';
+	   }	  	 
+
+		echo "<div class='paginate-pages'>";
+
 	   for( $e=0; $e < $numPages; $e++ ) {
            $p = $e + 1;
        
@@ -49,14 +55,12 @@ function print_pagination($numPages,$urlVars,$currentPage) {
 	       } 
 	       
 
-		       echo '<a class="'. $class .'" href="?'. $urlVars .'p='. $p .'">'. $p .'</a>';
+		       echo '<a class="'. $class .'" href="?'. $urlVars .'p='. $p .'">'. $p .'</a> ';
 		  	  
 	   }
+
+echo "</div>";
 	   
-	   if ($currentPage != $numPages) {
-           $nextPage = $currentPage + 1;	
-		   echo ' <a href="?'. $urlVars .'p='. $nextPage.'">&raquo;&raquo;</a>';
-	   }	  	 
    
    }
 
@@ -82,7 +86,7 @@ if (!isset($_GET['album'])) {
 		   $caption = substr($album,0,20);
 		   array_push( $captions, $caption );
 			 
-		   $rand_dirs = glob($mainFolder.'/'.$album.'/thumbs/*.*', GLOB_NOSORT);
+		   $rand_dirs = glob($mainFolder.'/'.$album.'/*.*', GLOB_NOSORT);
            $rand_pic  = $rand_dirs[array_rand($rand_dirs)];
 		   array_push( $random_pics, $rand_pic );
 		  
@@ -122,12 +126,24 @@ if (!isset($_GET['album'])) {
 	     for( $i=$start; $i<$start + $albumsPerPage; $i++ ) {
 	  
 	        if( isset($albums[$i]) ) {
+
+				// determine the file that was picked randomly
+				$randomPreviewPic = explode('/', $random_pics[$i]);
+				$randomPreviewPic = end($randomPreviewPic);
+
+				// make a thumbnail for this album preview
+				$thumbDest = $mainFolder.'/'.$albums[$i].'/thumbs/'.$randomPreviewPic;
+		     	make_thumb('albums/'.$albums[$i],$randomPreviewPic,$thumbDest,$thumb_width); 
+
+				// figure out the URL to the thumbnail we generated
+				$randomPreviewPicThumbURL = "/$mainFolder/$albums[$i]/thumbs/$randomPreviewPic";
+
 			 		 			 
 			    echo '<div class="thumb-album shadow">
 				        
 						<div class="thumb-wrapper">
 						   <a href="'.$_SERVER['PHP_SELF'].'?album='. urlencode($albums[$i]) .'">
-			                 <img src="'. $random_pics[$i] .'" width="'.$thumb_width.'" alt="" />
+			                 <img src="'.$randomPreviewPicThumbURL.'" width="'.$thumb_width.'" alt="" />
 						   </a>	
 					    </div>
 						
@@ -163,29 +179,44 @@ if (!isset($_GET['album'])) {
 
      $files = array();
 
+
+	 // filter all files by file extension
      foreach($src_files as $file) {
         
 		$ext = strrchr($file, '.');
         if(in_array($ext, $extensions)) {
           
 		   array_push( $files, $file );
-		  
-		   
-		   if (!is_dir($src_folder.'/thumbs')) {
-              mkdir($src_folder.'/thumbs');
-              chmod($src_folder.'/thumbs', 0777);
-              //chown($src_folder.'/thumbs', 'apache'); 
-           }
-		   
-		   $thumb = $src_folder.'/thumbs/'.$file;
-           if (!file_exists($thumb)) {
-              make_thumb($src_folder,$file,$thumb,$thumb_width); 
-          
-		   }
         
 		 }
       
 	  }
+
+
+
+     // slice array thumbs down to the limited ones that should be thumbnails and generate them
+	 $currentPage = $_GET['p'];
+	 if($currentPage <= 1){
+	 	$startThumb = 0;
+	 } else {
+	 	$startThumb = ($currentPage - 1) * $itemsPerPage;
+		$startThumb = $startThumb;
+	 }
+	 $makeIntoThumbs = array_slice($files,$startThumb,$itemsPerPage);
+     foreach($makeIntoThumbs as $file) {
+
+			 // ensure thumbnail folder exits	   
+			 if (!is_dir($src_folder.'/thumbs')) {
+					 mkdir($src_folder.'/thumbs');
+					 chmod($src_folder.'/thumbs', 0777);
+			 }
+
+			 $thumb = $src_folder.'/thumbs/'.$file;
+			 if (!file_exists($thumb)) {
+					 make_thumb($src_folder,$file,$thumb,$thumb_width); 
+			 } else {
+			 }
+	}
  
 
    if ( count($files) == 0 ) {
