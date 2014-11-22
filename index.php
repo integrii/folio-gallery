@@ -24,7 +24,7 @@
 $(document).ready(function() {	
 	
 	// colorbox settings
-	$(".albumpix").colorbox({rel:'albumpix', transition:'none', scalePhotos:'true', maxWidth:'850px'});
+	$(".albumpix").colorbox({rel:'albumpix', transition:'none', scalePhotos:'true', maxWidth:'950px', maxHeight:'720px'});
 	
 	// fancy box settings
 	/*
