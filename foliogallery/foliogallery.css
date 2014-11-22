@@ -50,6 +50,15 @@ z-index:199;
 .fg .refresh {cursor:pointer;}
 
 /***** pagination style *****/
+
+#nextPage,
+#prevPage {
+width:250px;
+float:left;
+margin-bottom:10px;
+font-size:15px;
+}
+
 .fg a.paginate,
 .fg a.current-paginate, 
 .fg a.paginate:hover {

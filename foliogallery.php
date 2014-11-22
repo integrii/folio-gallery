@@ -110,24 +110,26 @@ function paginate_array($numPages,$urlVars,$alb,$currentPage) {
    {
        if ($currentPage > 1)
 	   {
+	   	   $html .=  "<div id='nextPage'>";
 	       $prevPage = $currentPage - 1;
 	       $html .= ' <a class="pag prev" rel="'.$alb.'" rev="'.$prevPage.'" href="?'.$urlVars.'p='.$prevPage.'">Last Page</a> ';
+	   	   $html .=  '</div>';
 	   }	   
 	   
 	   if ($currentPage != $numPages)
 	   {
+	   	   $html .=  "<div id='prevPage'>";
            $nextPage = $currentPage + 1;	
 		   $html .= ' <a class="pag next" rel="'.$alb.'" rev="'.$nextPage.'" href="?'.$urlVars.'p='.$nextPage.'">Next Page</a>';
+	   	   $html .=  '</div>';
 	   }	  	 
 
-echo '<div>';	   
 	   for( $i=0; $i < $numPages; $i++ )
 	   {
            $p = $i + 1;
 		   $class = ($p==$currentPage ? 'current-paginate' : 'paginate'); 
 		   $html .= '<a rel="'.$alb.'" rev="'.$p.'" class="'.$class.' pag" href="?'.$urlVars.'p='.$p.'">'.$p.'</a>';	  
 	   }
-echo '</div>';
    
    }
    
