@@ -1,5 +1,5 @@
 ## Overview
-folioGallery is an easy to use gallery written by Harry G of foliopages.com.  Just drop it on your PHP web server and edit the ``folio-gallery.php`` file to point the ``$mainFolder`` variable to the location of your pictures you want hosted.  If you are like me, this makes it super easy to turn your pile of home pictures into a browsable website in just a few minutes!
+folioGallery is an easy to use gallery written by Harry G of foliopages.com.  Just drop it on your PHP web server and edit the ``foliogallery.php`` file to point the ``$mainFolder`` variable to the location of your pictures you want hosted.  If you are like me, this makes it super easy to turn your pile of home pictures into a browsable website in just a few minutes!
 
 ![folioGallery](/screenshot.png)
 
