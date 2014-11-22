@@ -24,7 +24,7 @@
 $(document).ready(function() {	
 	
 	// colorbox settings
-	$(".albumpix").colorbox({rel:'albumpix'});
+	$(".albumpix").colorbox({rel:'albumpix', transition:'none', scalePhotos:'true', maxWidth:'850px'});
 	
 	// fancy box settings
 	/*
@@ -39,10 +39,6 @@ $(document).ready(function() {
 <!-- end gallery header -->
 </head>
 <body>
-
-<div align="center" style="font-size:13px;font-weight:bold;">
-Greer Family Pictures (Homeserv)
-</div>
 
 <p>&nbsp;</p>
 
